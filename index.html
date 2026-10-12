@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Colegios al Día</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: una columna de láminas apiladas; cada lámina abre con una etiqueta corta, un titular y un objeto visual. */
+:root{
+  --bg:#F2F5F7; --surface:#FFFFFF; --ink:#14232B; --muted:#55666F; --line:#D3DCE1;
+  --accent:#2447C9; --ok:#1B9A5E; --warn:#C98A06; --bad:#CF4034;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E161A; --surface:#172329; --ink:#E7EEF1; --muted:#9BACB5; --line:#2B3A42;
+    --accent:#8FA6FF; --ok:#3CC487; --warn:#E7B040; --bad:#F0736A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E161A; --surface:#172329; --ink:#E7EEF1; --muted:#9BACB5; --line:#2B3A42;
+  --accent:#8FA6FF; --ok:#3CC487; --warn:#E7B040; --bad:#F0736A; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+.wrap{max-width:1040px;margin-inline:auto;padding-inline:20px;padding-block:8px 56px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.3rem,6.5vw,4.2rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;letter-spacing:-.015em;max-width:22ch}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+.lead{font-size:1.15rem;color:var(--muted);max-width:56ch}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.note{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:.92rem}
+.lamina{padding-block:52px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:26px}
+.lamina.first{border-top:0;padding-block:36px 52px}
+.head{display:flex;flex-direction:column;gap:12px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+.grid > *{min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.plain{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid var(--ink)}
+.tag{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
+
+/* semáforo */
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:600;padding:3px 10px 3px 8px;border-radius:99px;border:1px solid var(--line);white-space:nowrap;color:var(--ink)}
+.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.ok{--c:var(--ok)} .warn{--c:var(--warn)} .bad{--c:var(--bad)}
+.pill.ok{background:color-mix(in srgb,var(--ok) 13%,var(--surface))}
+.pill.warn{background:color-mix(in srgb,var(--warn) 16%,var(--surface))}
+.pill.bad{background:color-mix(in srgb,var(--bad) 13%,var(--surface))}
+
+/* portada */
+.hero{display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));align-items:center}
+.hero > *{min-width:0}
+.hero-text{display:flex;flex-direction:column;gap:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 18px 40px -28px color-mix(in srgb,var(--ink) 55%,transparent)}
+.panel-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto;gap:10px;align-items:center;font-size:.92rem}
+.bar{height:9px;border-radius:99px;background:color-mix(in srgb,var(--ink) 9%,var(--surface));overflow:hidden}
+.bar i{display:block;height:100%;width:var(--w);background:var(--c);border-radius:99px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.85rem;text-align:right;min-width:3.2em}
+
+/* áreas fiscalizadas */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;font-size:.92rem}
+.chip b{display:block;font-family:var(--display)}
+
+/* dos líneas */
+.lines{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:stretch}
+.line-card{border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);background:var(--surface);min-width:0}
+.line-card.main{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.line-card.main .tag,.line-card.main .muted{color:color-mix(in srgb,var(--bg) 72%,var(--ink))}
+.bridge{font-family:var(--mono);font-size:.82rem;color:var(--muted);text-align:center}
+
+/* celulares */
+.phones{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.step{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;min-width:0}
+.phone{width:100%;max-width:210px;aspect-ratio:9/16;border:3px solid var(--ink);border-radius:26px;background:var(--surface);padding:16px 14px;display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:stretch;text-align:left;font-size:.8rem}
+.view{flex:1;border:2px dashed var(--muted);border-radius:10px;display:flex;align-items:center;justify-content:center;padding:14px}
+.sheet{width:70%;aspect-ratio:3/4;background:color-mix(in srgb,var(--ink) 7%,var(--surface));border:1px solid var(--line);border-radius:4px;padding:10px 8px;display:flex;flex-direction:column;gap:6px}
+.sheet i{height:4px;border-radius:2px;background:var(--muted);opacity:.55}
+.sheet i:nth-child(2){width:70%} .sheet i:nth-child(4){width:50%}
+.shutter{width:38px;height:38px;border-radius:50%;border:3px solid var(--ink);align-self:center;flex:none}
+.file{font-family:var(--mono);font-size:.72rem;background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-radius:6px;padding:8px;overflow-wrap:anywhere}
+.kv{display:flex;flex-direction:column;gap:1px}
+.kv span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+
+/* tablas */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:560px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.m{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* hitos */
+.timeline{display:flex;flex-direction:column}
+.hito{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr);gap:16px;padding-block:16px;border-top:1px solid var(--line)}
+.hito:first-child{border-top:0}
+.hito .when{font-family:var(--mono);font-size:.82rem;color:var(--accent);padding-top:3px}
+.hito .what{display:flex;flex-direction:column;gap:4px}
+@media (max-width:520px){.hito{grid-template-columns:1fr;gap:4px}}
+
+/* preguntas */
+.qs{counter-reset:q;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));list-style:none;padding:0}
+.qs li{counter-increment:q;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 16px 16px 52px;position:relative;min-width:0}
+.qs li::before{content:counter(q);position:absolute;left:16px;top:14px;font-family:var(--display);font-weight:700;font-size:1.3rem;color:var(--accent)}
+footer{padding-top:28px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<section class="lamina first">
+  <div class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Propuesta de negocio · Octubre 2026</p>
+      <h1>Colegios al Día</h1>
+      <p class="lead">Que ningún colegio llegue a una fiscalización sin saber qué le falta. Una aplicación que lo muestra en un semáforo, y talleres para que los equipos trabajen mejor.</p>
+      <p class="note">Nombre provisorio. Lo definimos juntos.</p>
+    </div>
+    <div class="panel" aria-label="Ejemplo de pantalla de la aplicación">
+      <div class="panel-top"><h3>Estado del colegio</h3><span class="note">Pantalla de ejemplo</span></div>
+      <div class="row ok"><span>Personal</span><span class="bar"><i style="--w:86%"></i></span><span class="num">86%</span></div>
+      <div class="row warn"><span>Recursos y subvenciones</span><span class="bar"><i style="--w:72%"></i></span><span class="num">72%</span></div>
+      <div class="row ok"><span>Reglamentos y protocolos</span><span class="bar"><i style="--w:95%"></i></span><span class="num">95%</span></div>
+      <div class="row bad"><span>Seguridad e infraestructura</span><span class="bar"><i style="--w:58%"></i></span><span class="num">58%</span></div>
+      <div class="row ok"><span>Estudiantes</span><span class="bar"><i style="--w:90%"></i></span><span class="num">90%</span></div>
+      <div class="chips"><span class="pill ok">Al día</span><span class="pill warn">Vence pronto</span><span class="pill bad">Falta o vencido</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">El problema</p>
+    <h2>A un colegio lo fiscalizan por todos lados</h2>
+    <p class="lead">Cada organismo pide cosas distintas, los respaldos viven en carpetas y planillas, y lo que falta se descubre cuando ya llegó el fiscalizador.</p>
+  </div>
+  <div class="chips">
+    <div class="chip"><b>Personal</b>contratos, títulos, certificados</div>
+    <div class="chip"><b>Recursos</b>rendición de subvenciones</div>
+    <div class="chip"><b>Normativa interna</b>reglamento, protocolos, actas</div>
+    <div class="chip"><b>Seguridad</b>plan de seguridad, autorizaciones</div>
+    <div class="chip"><b>Estudiantes</b>matrícula, asistencia, integración</div>
+  </div>
+  <p class="note">Áreas de ejemplo. La lista real la armas tú, que las has vivido.</p>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">El negocio</p>
+    <h2>Dos líneas para un mismo cliente</h2>
+    <p class="lead">Fundaciones educacionales, colegios particulares subvencionados y privados. Quien decide la compra es el director o el sostenedor.</p>
+  </div>
+  <div class="lines">
+    <div class="line-card">
+      <span class="tag">Línea 1 · Talleres</span>
+      <h3>Ingresos desde el primer mes</h3>
+      <ul>
+        <li><b>Inteligencia artificial</b> para equipos directivos, líderes y encargados de proyectos.</li>
+        <li><b>Jornadas de equipo</b> con encuesta de clima previa y herramientas de coaching.</li>
+      </ul>
+      <p class="muted small">Los colegios ya contratan este tipo de jornadas todos los años.</p>
+    </div>
+    <div class="line-card main">
+      <span class="tag">Línea 2 · Aplicación</span>
+      <h3>Ingreso mensual que crece</h3>
+      <ul>
+        <li>Control de todo lo que se fiscaliza, por área y con responsables.</li>
+        <li>Se instala una vez y se paga un plan mensual.</li>
+      </ul>
+      <p class="muted small">Es la apuesta grande. Hay que demostrarla en el piloto.</p>
+    </div>
+  </div>
+  <p class="bridge">Los talleres abren la puerta del colegio. La aplicación hace que se queden.</p>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">La aplicación</p>
+    <h2>Del papel al semáforo, desde el celular</h2>
+    <p class="lead">Así se vería cargar un documento. Los nombres y datos son inventados.</p>
+  </div>
+  <div class="phones">
+    <div class="step">
+      <div class="phone"><div class="view"><div class="sheet"><i></i><i></i><i></i><i></i></div></div><div class="shutter"></div></div>
+      <h3>Tomas la foto</h3>
+      <p class="muted small">Del documento en papel, con el celular.</p>
+    </div>
+    <div class="step">
+      <div class="phone">
+        <div class="file">Titulo_Rojas_Carla.pdf</div>
+        <div class="kv"><span>Tipo</span>Título profesional</div>
+        <div class="kv"><span>Persona</span>Carla Rojas</div>
+        <div class="kv"><span>Se guarda en</span>Personal / Docentes</div>
+        <span class="pill ok">Guardado</span>
+      </div>
+      <h3>La app lo ordena</h3>
+      <p class="muted small">Lo pasa a PDF, le pone nombre y lo guarda donde corresponde.</p>
+    </div>
+    <div class="step">
+      <div class="phone">
+        <div class="file">Antecedentes_Soto_Luis.pdf</div>
+        <div class="kv"><span>Tipo</span>Certificado de antecedentes</div>
+        <div class="kv"><span>Problema</span>Está vencido</div>
+        <span class="pill bad">No sirve</span>
+        <p class="small">Hay que pedir uno nuevo.</p>
+      </div>
+      <h3>Avisa si no sirve</h3>
+      <p class="muted small">Vencido, ilegible o sin firma.</p>
+    </div>
+  </div>
+
+  <h3>Y arma el consolidado de lo que falta</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Requisito</th><th>Área</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td>Certificado de antecedentes · L. Soto</td><td>Personal</td><td>RR.HH.</td><td class="m">Vencido</td><td><span class="pill bad">Falta</span></td></tr>
+        <tr><td>Revisión de extintores</td><td>Seguridad</td><td>Administración</td><td class="m">30 oct</td><td><span class="pill warn">Vence pronto</span></td></tr>
+        <tr><td>Acta del consejo escolar</td><td>Normativa interna</td><td>Dirección</td><td class="m">15 nov</td><td><span class="pill warn">Vence pronto</span></td></tr>
+        <tr><td>Reglamento interno actualizado</td><td>Normativa interna</td><td>Dirección</td><td class="m">Mar 2027</td><td><span class="pill ok">Al día</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid two">
+    <div class="plain">
+      <span class="tag">Primera versión · piloto</span>
+      <ul>
+        <li>Semáforo por área y por requisito</li>
+        <li>Carga de documentos, también desde el celular</li>
+        <li>Avisos por correo antes de cada vencimiento</li>
+        <li>Reporte listo para mostrar al fiscalizador</li>
+      </ul>
+    </div>
+    <div class="plain">
+      <span class="tag">Segunda versión · si el piloto funciona</span>
+      <ul>
+        <li>La app lee el documento, lo nombra y detecta si no sirve</li>
+        <li>Consolidados automáticos para dirección y sostenedor</li>
+        <li>Nuevas áreas de fiscalización, una a la vez</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">Lo que se puede vender</p>
+    <h2>Cinco productos que salen de la aplicación</h2>
+  </div>
+  <div class="grid">
+    <div class="card"><span class="tag">Pago único</span><h3>Radiografía inicial</h3><p class="small muted">Revisamos el colegio contra la lista de requisitos y entregamos qué falta.</p></div>
+    <div class="card"><span class="tag">Mensual</span><h3>Plan por áreas</h3><p class="small muted">El colegio parte con Personal y suma áreas cuando quiera.</p></div>
+    <div class="card"><span class="tag">Anual</span><h3>Simulacro de fiscalización</h3><p class="small muted">Tú revisas el colegio como lo haría un fiscalizador, antes de que llegue uno.</p></div>
+    <div class="card"><span class="tag">Mensual</span><h3>Reporte para el sostenedor</h3><p class="small muted">Una vista de todos sus colegios en una sola pantalla.</p></div>
+    <div class="card"><span class="tag">Por taller</span><h3>Capacitación del equipo</h3><p class="small muted">Para que cada responsable mantenga su área al día.</p></div>
+  </div>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">El equipo</p>
+    <h2>Lo que sabe cada uno es lo que le falta al otro</h2>
+  </div>
+  <div class="grid two">
+    <div class="card">
+      <span class="tag">Tú</span>
+      <h3>Sabes qué piden y dónde duele</h3>
+      <ul class="small">
+        <li>15 años como jefa de Recursos Humanos en un colegio</li>
+        <li>Técnico en administración que llegó a la jefatura</li>
+        <li>Has pasado por fiscalizaciones de todo tipo</li>
+        <li>Los directores te escuchan como una par</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="tag">Yo</span>
+      <h3>Lo convierto en herramienta y en taller</h3>
+      <ul class="small">
+        <li>Ingeniero Comercial, analista de desarrollo de personas en Fundación Integra</li>
+        <li>Indicadores, datos y automatización de procesos con IA</li>
+        <li>Diseño y gestión de programas de capacitación</li>
+        <li>Diplomado en coaching para el liderazgo</li>
+      </ul>
+      <p class="small muted">No soy programador. Construyo con IA, mantengo la aplicación acotada y, si crece, se contrata uno.</p>
+    </div>
+  </div>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">El plan</p>
+    <h2>Partimos en tu colegio, que ya aceptó</h2>
+  </div>
+  <div class="timeline">
+    <div class="hito"><span class="when">Octubre 2026</span><div class="what"><h3>Acuerdo y lista de requisitos</h3><p class="small muted">Tú defines qué se fiscaliza en el área de Personal. Dejamos el piloto por escrito con el colegio.</p></div></div>
+    <div class="hito"><span class="when">Noviembre 2026</span><div class="what"><h3>Demostración y primer taller</h3><p class="small muted">Aplicación con datos ficticios para mostrar. Taller de IA al equipo directivo.</p></div></div>
+    <div class="hito"><span class="when">Diciembre 2026</span><div class="what"><h3>Datos reales y jornada de equipo</h3><p class="small muted">El colegio carga sus carpetas. Jornada de cierre de año diseñada con la encuesta de clima.</p></div></div>
+    <div class="hito"><span class="when">Enero y febrero 2027</span><div class="what"><h3>Ordenar y formalizar</h3><p class="small muted">Medimos resultados del piloto, constituimos la sociedad y preparamos el material de venta.</p></div></div>
+    <div class="hito"><span class="when">Marzo 2027</span><div class="what"><h3>Salir a vender</h3><p class="small muted">Con un caso real en la mano, a colegios de tu red.</p></div></div>
+    <div class="hito"><span class="when">Junio 2027</span><div class="what"><h3>Primera meta: 5 colegios pagando</h3><p class="small muted">Si no se cumple, revisamos qué producto sí se vendió y ajustamos.</p></div></div>
+  </div>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">Los números</p>
+    <h2>Qué se cobra y qué falta demostrar</h2>
+    <p class="lead">Son rangos para validar con los primeros clientes. Ninguno es una promesa.</p>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Producto</th><th>Cómo se cobra</th><th>Rango estimado</th><th>Qué tan seguro es</th></tr></thead>
+      <tbody>
+        <tr><td>Taller de IA</td><td>Por taller</td><td class="m">$350.000 – $600.000</td><td>Los colegios ya pagan capacitaciones</td></tr>
+        <tr><td>Jornada de equipo</td><td>Por jornada</td><td class="m">$400.000 – $800.000</td><td>Los colegios ya pagan jornadas</td></tr>
+        <tr><td>Aplicación · instalación</td><td>Pago único</td><td class="m">$400.000 – $900.000</td><td>Por demostrar en el piloto</td></tr>
+        <tr><td>Aplicación · plan mensual</td><td>Mensual por colegio</td><td class="m">$80.000 – $150.000</td><td>Por demostrar en el piloto</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small muted">Cuenta de referencia: 10 colegios en un plan de $100.000 son $1.000.000 al mes, antes de talleres. Los talleres se pueden financiar con franquicia SENCE a través de una OTEC aliada.</p>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">Los riesgos</p>
+    <h2>Lo que puede salir mal y cómo lo cuidamos</h2>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Riesgo</th><th>Cómo lo cuidamos</th></tr></thead>
+      <tbody>
+        <tr><td>Manejamos documentos sensibles</td><td>Los archivos quedan en la nube del propio colegio. Nosotros no los guardamos.</td></tr>
+        <tr><td>La lista de requisitos tiene un error</td><td>Partimos solo con Personal, que dominas, y la revisa un abogado antes de venderla.</td></tr>
+        <tr><td>No soy programador</td><td>Aplicación acotada y revisión de un programador antes de instalarla en un segundo colegio.</td></tr>
+        <tr><td>Trabajas en el colegio piloto</td><td>Acuerdo por escrito con el colegio, y la decisión de compra no pasa por ti.</td></tr>
+        <tr><td>Los dos tenemos trabajo</td><td>Horas semanales acordadas desde el inicio y un piloto de solo tres meses.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">Tu parte</p>
+    <h2>Qué te pido y qué no</h2>
+  </div>
+  <div class="grid two">
+    <div class="plain">
+      <span class="tag">Te pido</span>
+      <ul>
+        <li>Tu conocimiento: la lista de lo que se fiscaliza</li>
+        <li>Unas horas a la semana, que definimos juntos</li>
+        <li>Probar la aplicación en tu trabajo y decirme qué no sirve</li>
+        <li>Presentarme a colegas de otros colegios</li>
+      </ul>
+    </div>
+    <div class="plain">
+      <span class="tag">No te pido</span>
+      <ul>
+        <li>Poner plata</li>
+        <li>Programar ni aprender tecnología nueva</li>
+        <li>Dejar tu trabajo</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="lamina">
+  <div class="head">
+    <p class="eyebrow">Para conversar</p>
+    <h2>Preguntas que solo tú puedes responder</h2>
+  </div>
+  <ol class="qs">
+    <li>¿Qué fiscalizaciones recibió el colegio en los últimos tres años, y de qué organismos?</li>
+    <li>¿Qué documento o requisito es el que más cuesta tener al día?</li>
+    <li>¿Hubo observaciones o multas? ¿Por qué motivo?</li>
+    <li>¿Qué haces hoy en Excel o en papel que te quita más tiempo?</li>
+    <li>¿El colegio trabaja con Microsoft 365 o con Google?</li>
+    <li>¿Usan algún sistema de remuneraciones o de gestión de personas?</li>
+    <li>¿Con quién dejamos el piloto por escrito?</li>
+    <li>¿Cuántas horas a la semana podrías dedicarle?</li>
+    <li>¿Cómo te gustaría participar: como socia, y en qué proporción?</li>
+    <li>¿A qué cinco colegas de otros colegios les haríamos estas mismas preguntas?</li>
+  </ol>
+  <footer><p class="note">Documento de trabajo · Octubre 2026 · Las pantallas, nombres y cifras son ejemplos.</p></footer>
+</section>
+
+</div>
+</body>
+</html>
