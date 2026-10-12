@@ -5,193 +5,391 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Colegios al Día</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
 <style>
-/* Layout: una columna de láminas apiladas; cada lámina abre con una etiqueta corta, un titular y un objeto visual. */
+/* Layout: portada nocturna a todo el ancho con el semáforo como marca; después, un menú de tres servicios con color propio y una sección por servicio que repite ese color. Aspecto único, no cambia con el tema. */
 :root{
-  --bg:#F2F5F7; --surface:#FFFFFF; --ink:#14232B; --muted:#55666F; --line:#D3DCE1;
-  --accent:#2447C9; --ok:#1B9A5E; --warn:#C98A06; --bad:#CF4034;
+  --night:#0A1230; --night2:#131D45; --paper:#F3F5FA; --surface:#FFFFFF; --ink:#101935; --muted:#58617D; --line:#D8DDEA;
+  --app:#2F5BFF; --ia:#087F8C; --team:#C42B6E;
+  --ok:#1B9A5E; --warn:#C98A06; --bad:#CF4034; --ok-lit:#3DDC97; --warn-lit:#FFC83D; --bad-lit:#FF6B5E;
+  --on-night:#FFFFFF; --on-night-soft:#B4BDDD;
   --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
   --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0E161A; --surface:#172329; --ink:#E7EEF1; --muted:#9BACB5; --line:#2B3A42;
-    --accent:#8FA6FF; --ok:#3CC487; --warn:#E7B040; --bad:#F0736A; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0E161A; --surface:#172329; --ink:#E7EEF1; --muted:#9BACB5; --line:#2B3A42;
-  --accent:#8FA6FF; --ok:#3CC487; --warn:#E7B040; --bad:#F0736A; color-scheme:dark;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
-.wrap{max-width:1040px;margin-inline:auto;padding-inline:20px;padding-block:8px 56px}
-h1,h2,h3{font-family:var(--display);line-height:1.1;text-wrap:balance;margin:0}
-h1{font-size:clamp(2.3rem,6.5vw,4.2rem);font-weight:700;letter-spacing:-.02em}
-h2{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;letter-spacing:-.015em;max-width:22ch}
-h3{font-size:1.15rem;font-weight:700}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+.wrap{max-width:1100px;margin-inline:auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--display);line-height:1.05;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.8rem,4.6vw,3rem);font-weight:800;letter-spacing:-.02em;max-width:20ch}
+h3{font-size:1.2rem;font-weight:700;line-height:1.2}
 p{margin:0}
+a{color:inherit}
+ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
 .lead{font-size:1.15rem;color:var(--muted);max-width:56ch}
-.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .note{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
-.muted{color:var(--muted)}
-.small{font-size:.92rem}
-.lamina{padding-block:52px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:26px}
-.lamina.first{border-top:0;padding-block:36px 52px}
+.muted{color:var(--muted)} .small{font-size:.93rem}
+.tag{font-family:var(--mono);font-size:.74rem;letter-spacing:.07em;text-transform:uppercase}
+.sec{padding-block:64px;display:flex;flex-direction:column;gap:28px}
 .head{display:flex;flex-direction:column;gap:12px}
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
 .grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
 .grid > *{min-width:0}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px}
 .plain{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid var(--ink)}
-.tag{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
+.c-app{--c:var(--app)} .c-ia{--c:var(--ia)} .c-team{--c:var(--team)}
+.sq{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--c);flex:none}
+.sq.off{background:transparent;border:1.5px solid var(--line)}
 
-/* semáforo */
-.pill{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:600;padding:3px 10px 3px 8px;border-radius:99px;border:1px solid var(--line);white-space:nowrap;color:var(--ink)}
-.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
-.ok{--c:var(--ok)} .warn{--c:var(--warn)} .bad{--c:var(--bad)}
-.pill.ok{background:color-mix(in srgb,var(--ok) 13%,var(--surface))}
-.pill.warn{background:color-mix(in srgb,var(--warn) 16%,var(--surface))}
-.pill.bad{background:color-mix(in srgb,var(--bad) 13%,var(--surface))}
+/* navegación */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--night) 92%,transparent);backdrop-filter:blur(8px);color:var(--on-night)}
+.top .wrap{display:flex;align-items:center;gap:18px;padding-block:10px}
+.brand{font-family:var(--display);font-weight:800;white-space:nowrap;text-decoration:none}
+.links{display:flex;gap:6px;overflow-x:auto;margin-left:auto;scrollbar-width:none}
+.links a{display:inline-flex;align-items:center;gap:7px;font-size:.86rem;text-decoration:none;white-space:nowrap;padding:6px 10px;border-radius:99px;color:var(--on-night-soft)}
+.links a:hover,.links a:focus-visible{background:var(--night2);color:var(--on-night);outline:none}
 
 /* portada */
-.hero{display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));align-items:center}
-.hero > *{min-width:0}
-.hero-text{display:flex;flex-direction:column;gap:18px}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 18px 40px -28px color-mix(in srgb,var(--ink) 55%,transparent)}
+.hero{background:var(--night);color:var(--on-night);position:relative;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;pointer-events:none}
+.blob.a{width:420px;height:420px;background:var(--app);left:-120px;top:-140px}
+.blob.b{width:360px;height:360px;background:var(--team);right:-100px;bottom:-160px;opacity:.4}
+.blob.c{width:300px;height:300px;background:var(--ia);right:30%;top:-180px;opacity:.45}
+.hero .wrap{position:relative;padding-block:56px 44px;display:flex;flex-direction:column;gap:40px}
+.hero-grid{display:grid;gap:36px;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));align-items:center}
+.hero-grid > *{min-width:0}
+.hero-text{display:flex;flex-direction:column;gap:20px}
+.lights{display:flex;gap:12px}
+.lights i{width:30px;height:30px;border-radius:50%;background:var(--night2);border:2px solid color-mix(in srgb,var(--on-night) 22%,transparent)}
+.lights i:nth-child(3){background:var(--ok-lit);box-shadow:0 0 26px var(--ok-lit)}
+h1{font-size:clamp(3.2rem,10.5vw,7rem);font-weight:800;letter-spacing:-.035em;line-height:.92}
+h1 em{font-style:normal;color:var(--ok-lit)}
+.hero .lead{color:var(--on-night-soft);font-size:1.2rem}
+.hero .eyebrow,.hero .note{color:var(--on-night-soft)}
+.panel{background:color-mix(in srgb,var(--on-night) 7%,var(--night));border:1px solid color-mix(in srgb,var(--on-night) 18%,transparent);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:15px;box-shadow:0 30px 60px -30px #000}
 .panel-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
-.row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto;gap:10px;align-items:center;font-size:.92rem}
-.bar{height:9px;border-radius:99px;background:color-mix(in srgb,var(--ink) 9%,var(--surface));overflow:hidden}
-.bar i{display:block;height:100%;width:var(--w);background:var(--c);border-radius:99px}
-.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.85rem;text-align:right;min-width:3.2em}
+.row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1.3fr) auto;gap:10px;align-items:center;font-size:.93rem}
+.bar{height:10px;border-radius:99px;background:color-mix(in srgb,var(--on-night) 12%,transparent);overflow:hidden}
+.bar i{display:block;height:100%;width:var(--w);background:var(--l);border-radius:99px;transform-origin:left}
+.l-ok{--l:var(--ok-lit)} .l-warn{--l:var(--warn-lit)} .l-bad{--l:var(--bad-lit)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.86rem;text-align:right;min-width:3.2em}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--on-night-soft)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--l)}
+.strap{display:flex;flex-direction:column;gap:12px}
+.strap-links{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.strap-links a{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:var(--c);color:var(--on-night);text-decoration:none;font-family:var(--display);font-weight:700;transition:transform .2s}
+.strap-links a span{margin-left:auto;font-family:var(--mono);font-weight:400}
+.strap-links a:hover,.strap-links a:focus-visible{transform:translateY(-3px);outline:2px solid var(--on-night);outline-offset:2px}
 
-/* áreas fiscalizadas */
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;font-size:.92rem}
-.chip b{display:block;font-family:var(--display)}
+/* cinta de requisitos */
+.ticker{background:var(--night2);color:var(--on-night-soft);overflow:hidden;font-family:var(--mono);font-size:.82rem;padding-block:11px}
+.ticker div{display:flex;gap:34px;width:max-content;white-space:nowrap}
+.ticker span::before{content:"●";margin-right:34px;font-size:.6em;vertical-align:middle;color:var(--ok-lit)}
 
-/* dos líneas */
-.lines{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:stretch}
-.line-card{border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);background:var(--surface);min-width:0}
-.line-card.main{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.line-card.main .tag,.line-card.main .muted{color:color-mix(in srgb,var(--bg) 72%,var(--ink))}
-.bridge{font-family:var(--mono);font-size:.82rem;color:var(--muted);text-align:center}
+/* menú de servicios */
+.menu{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.svc-card{background:var(--surface);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line);text-decoration:none;min-width:0;transition:transform .25s,box-shadow .25s}
+.svc-card:hover,.svc-card:focus-visible{transform:translateY(-6px);box-shadow:0 24px 40px -24px color-mix(in srgb,var(--c) 70%,transparent);outline:none}
+.svc-card .topb{background:var(--c);color:var(--on-night);padding:22px;display:flex;flex-direction:column;gap:14px}
+.svc-card .topb svg{width:44px;height:44px}
+.svc-card .topb h3{font-size:1.5rem;font-weight:800}
+.svc-card .bod{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;flex:1}
+.kv{display:flex;flex-direction:column;gap:1px}
+.kv span{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.more{margin-top:auto;font-family:var(--mono);font-size:.82rem;color:var(--c)}
+.indep{text-align:center;font-family:var(--display);font-weight:700;font-size:1.15rem}
+
+/* secciones de servicio */
+.svc-head{background:var(--c);color:var(--on-night);border-radius:24px;padding:clamp(24px,5vw,44px);display:flex;flex-direction:column;gap:16px;scroll-margin-top:70px}
+.svc-head h2{max-width:18ch}
+.svc-head .lead{color:color-mix(in srgb,var(--on-night) 86%,var(--c))}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.meta span{font-size:.84rem;padding:5px 12px;border-radius:99px;background:color-mix(in srgb,var(--night) 28%,var(--c))}
+
+/* semáforo en superficies claras */
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:600;padding:3px 10px 3px 8px;border-radius:99px;border:1px solid var(--line);white-space:nowrap;align-self:flex-start}
+.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--s)}
+.pill.ok{--s:var(--ok);background:color-mix(in srgb,var(--ok) 13%,var(--surface))}
+.pill.warn{--s:var(--warn);background:color-mix(in srgb,var(--warn) 16%,var(--surface))}
+.pill.bad{--s:var(--bad);background:color-mix(in srgb,var(--bad) 13%,var(--surface))}
 
 /* celulares */
 .phones{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
 .step{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;min-width:0}
-.phone{width:100%;max-width:210px;aspect-ratio:9/16;border:3px solid var(--ink);border-radius:26px;background:var(--surface);padding:16px 14px;display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:stretch;text-align:left;font-size:.8rem}
-.view{flex:1;border:2px dashed var(--muted);border-radius:10px;display:flex;align-items:center;justify-content:center;padding:14px}
+.phone{width:100%;max-width:210px;aspect-ratio:9/16;border:3px solid var(--ink);border-radius:26px;background:var(--surface);padding:16px 14px;display:flex;flex-direction:column;gap:10px;justify-content:center;text-align:left;font-size:.8rem}
+.view{flex:1;border:2px dashed var(--muted);border-radius:10px;display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden}
+.view::after{content:"";position:absolute;left:8%;right:8%;top:50%;height:3px;border-radius:2px;background:var(--app);box-shadow:0 0 12px var(--app)}
 .sheet{width:70%;aspect-ratio:3/4;background:color-mix(in srgb,var(--ink) 7%,var(--surface));border:1px solid var(--line);border-radius:4px;padding:10px 8px;display:flex;flex-direction:column;gap:6px}
 .sheet i{height:4px;border-radius:2px;background:var(--muted);opacity:.55}
 .sheet i:nth-child(2){width:70%} .sheet i:nth-child(4){width:50%}
 .shutter{width:38px;height:38px;border-radius:50%;border:3px solid var(--ink);align-self:center;flex:none}
-.file{font-family:var(--mono);font-size:.72rem;background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-radius:6px;padding:8px;overflow-wrap:anywhere}
-.kv{display:flex;flex-direction:column;gap:1px}
-.kv span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.file{font-family:var(--mono);font-size:.72rem;background:color-mix(in srgb,var(--app) 12%,var(--surface));border-radius:6px;padding:8px;overflow-wrap:anywhere}
 
 /* tablas */
-.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:560px}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.93rem;min-width:580px}
 th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
 tr:last-child td{border-bottom:0}
 th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
 td.m{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td .sq{margin-right:8px}
+
+/* demo IA */
+.chat{background:var(--night);color:var(--on-night);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px;font-size:.95rem;min-height:250px}
+.chat .who{font-family:var(--mono);font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--on-night-soft)}
+.bubble{background:var(--night2);border-radius:12px;padding:12px 14px}
+.caret{display:inline-block;width:8px;height:1.05em;background:var(--ok-lit);vertical-align:text-bottom;margin-left:2px}
+.answer{display:flex;flex-direction:column;gap:6px}
+.answer div{display:flex;gap:10px;align-items:baseline;transition:opacity .4s,transform .4s}
+.answer b{font-family:var(--mono);font-weight:500;font-size:.78rem;color:var(--ok-lit);white-space:nowrap}
+
+/* clima */
+.clima{display:flex;flex-direction:column;gap:12px}
+.crow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.6fr) auto;gap:10px;align-items:center;font-size:.92rem}
+.cbar{height:12px;border-radius:99px;background:color-mix(in srgb,var(--ink) 8%,var(--surface));overflow:hidden}
+.cbar i{display:block;height:100%;width:var(--w);border-radius:99px;background:var(--muted);transform-origin:left}
+.crow.low .cbar i{background:var(--team)}
+.crow.low{font-weight:600}
+.flow{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.flow .card{border-top:5px solid var(--c)}
+
+/* combinaciones */
+.combo{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.combo.full{background:var(--night);color:var(--on-night);border-color:var(--night)}
+.combo.full .muted{color:var(--on-night-soft)}
+.dots{display:flex;gap:6px}
+.dots .sq{width:22px;height:22px;border-radius:6px}
+.combo.full .sq.off{border-color:var(--on-night-soft)}
 
 /* hitos */
-.timeline{display:flex;flex-direction:column}
-.hito{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr);gap:16px;padding-block:16px;border-top:1px solid var(--line)}
-.hito:first-child{border-top:0}
-.hito .when{font-family:var(--mono);font-size:.82rem;color:var(--accent);padding-top:3px}
-.hito .what{display:flex;flex-direction:column;gap:4px}
-@media (max-width:520px){.hito{grid-template-columns:1fr;gap:4px}}
+.timeline{display:flex;flex-direction:column;border-left:3px solid var(--line);margin-left:7px}
+.hito{position:relative;padding:0 0 26px 26px;display:flex;flex-direction:column;gap:4px}
+.hito:last-child{padding-bottom:0}
+.hito::before{content:"";position:absolute;left:-10.5px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--surface);border:4px solid var(--app)}
+.hito.goal::before{background:var(--ok);border-color:var(--ok)}
+.when{font-family:var(--mono);font-size:.82rem;color:var(--app)}
 
 /* preguntas */
-.qs{counter-reset:q;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));list-style:none;padding:0}
-.qs li{counter-increment:q;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 16px 16px 52px;position:relative;min-width:0}
-.qs li::before{content:counter(q);position:absolute;left:16px;top:14px;font-family:var(--display);font-weight:700;font-size:1.3rem;color:var(--accent)}
-footer{padding-top:28px;border-top:1px solid var(--line)}
+.dark{background:var(--night);color:var(--on-night)}
+.dark .eyebrow,.dark .note{color:var(--on-night-soft)}
+.qs{counter-reset:q;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));list-style:none;padding:0;margin:0}
+.qs li{counter-increment:q;background:var(--night2);border-radius:14px;padding:16px 16px 16px 54px;position:relative;min-width:0}
+.qs li::before{content:counter(q);position:absolute;left:16px;top:12px;font-family:var(--display);font-weight:800;font-size:1.4rem;color:var(--ok-lit)}
+
+/* demostración interactiva */
+.demo{background:var(--surface);border:2px solid var(--app);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:0 24px 50px -34px var(--app)}
+.demo-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.demo-top > div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.score{align-items:flex-end;text-align:right}
+.score b{font-family:var(--display);font-weight:800;font-size:2.8rem;line-height:1;font-variant-numeric:tabular-nums}
+.pbar{height:14px;border-radius:99px;background:color-mix(in srgb,var(--ink) 8%,var(--surface));overflow:hidden}
+.pbar i{display:block;height:100%;width:50%;border-radius:99px;background:var(--bad);transition:width .7s cubic-bezier(.2,.8,.2,1),background .4s}
+.reqs{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.req{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;font:inherit;color:inherit;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;width:100%;min-width:0;transition:border-color .2s,transform .2s,background .3s}
+.req > span:first-child{display:flex;flex-direction:column;min-width:0}
+.req small{color:var(--muted);font-size:.8rem}
+.req .pill{align-self:center}
+.req:not([data-s="ok"]):hover,.req:not([data-s="ok"]):focus-visible{border-color:var(--app);transform:translateY(-2px);outline:none}
+.req[data-s="ok"]{cursor:default;background:color-mix(in srgb,var(--ok) 6%,var(--surface))}
+.demo-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{font:inherit;font-size:.86rem;padding:7px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover,.btn:focus-visible{border-color:var(--ink);outline:none}
+
+/* selector de servicios */
+.pick{display:flex;flex-wrap:wrap;gap:10px}
+.tog{display:inline-flex;align-items:center;gap:10px;font:inherit;font-family:var(--display);font-weight:700;padding:12px 18px;border-radius:14px;border:2px solid var(--c);background:var(--surface);color:var(--ink);cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.tog[aria-pressed="true"]{background:var(--c);color:var(--on-night)}
+.tog[aria-pressed="true"] .sq{background:var(--on-night)}
+.tog:hover,.tog:focus-visible{transform:translateY(-2px);outline:2px solid var(--ink);outline-offset:2px}
+.picklist{list-style:none;padding:0;gap:9px}
+.picklist li{display:flex;gap:10px;align-items:baseline}
+.picklist .sq{transform:translateY(1px)}
+
+/* movimiento */
+@media (prefers-reduced-motion:no-preference){
+  .anim .hero-text > *{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+  .anim .hero-text > :nth-child(2){animation-delay:.1s} .anim .hero-text > :nth-child(3){animation-delay:.2s}
+  .anim .hero-text > :nth-child(4){animation-delay:.35s} .anim .hero-text > :nth-child(5){animation-delay:.45s}
+  .anim .panel{animation:rise .9s .35s cubic-bezier(.2,.8,.2,1) both}
+  .anim .strap{animation:rise .8s .7s cubic-bezier(.2,.8,.2,1) both}
+  .anim .bar i{animation:grow 1.2s .8s cubic-bezier(.2,.8,.2,1) both}
+  .anim .lights i:nth-child(1){animation:red 7s infinite}
+  .anim .lights i:nth-child(2){animation:amber 7s infinite}
+  .anim .lights i:nth-child(3){animation:green 7s infinite}
+  .anim .blob.a{animation:drift 16s ease-in-out infinite alternate}
+  .anim .blob.b{animation:drift 20s ease-in-out infinite alternate-reverse}
+  .anim .blob.c{animation:drift 24s ease-in-out infinite alternate}
+  .anim .ticker div{animation:tick 45s linear infinite}
+  .anim .view::after{animation:scan 2.4s ease-in-out infinite alternate}
+  .anim .step .phone{animation:focus 9s infinite}
+  .anim .step:nth-child(2) .phone{animation-delay:3s} .anim .step:nth-child(3) .phone{animation-delay:6s}
+  .anim .caret{animation:blink 1s steps(1) infinite}
+  .anim .rv{transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .anim .rv.pre{opacity:0;transform:translateY(34px)}
+  .anim .rv.pre.in{opacity:1;transform:none}
+  .anim .rv.pre .cbar i{transform:scaleX(0)}
+  .anim .rv .cbar i{transition:transform 1.1s .3s cubic-bezier(.2,.8,.2,1)}
+  .anim .rv.pre.in .cbar i{transform:none}
+}
+@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes drift{to{transform:translate(70px,50px) scale(1.15)}}
+@keyframes tick{to{transform:translateX(-50%)}}
+@keyframes scan{from{top:12%}to{top:88%}}
+@keyframes blink{50%{opacity:0}}
+@keyframes focus{0%,30%{transform:translateY(-8px);box-shadow:0 0 0 6px color-mix(in srgb,var(--app) 30%,transparent)}36%,100%{transform:none;box-shadow:none}}
+@keyframes red{0%,22%{background:var(--bad-lit);box-shadow:0 0 26px var(--bad-lit)}26%,100%{background:var(--night2);box-shadow:none}}
+@keyframes amber{0%,22%{background:var(--night2);box-shadow:none}26%,44%{background:var(--warn-lit);box-shadow:0 0 26px var(--warn-lit)}48%,100%{background:var(--night2);box-shadow:none}}
+@keyframes green{0%,44%{background:var(--night2);box-shadow:none}48%,100%{background:var(--ok-lit);box-shadow:0 0 26px var(--ok-lit)}}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-
-<section class="lamina first">
-  <div class="hero">
-    <div class="hero-text">
-      <p class="eyebrow">Propuesta de negocio · Octubre 2026</p>
-      <h1>Colegios al Día</h1>
-      <p class="lead">Que ningún colegio llegue a una fiscalización sin saber qué le falta. Una aplicación que lo muestra en un semáforo, y talleres para que los equipos trabajen mejor.</p>
-      <p class="note">Nombre provisorio. Lo definimos juntos.</p>
-    </div>
-    <div class="panel" aria-label="Ejemplo de pantalla de la aplicación">
-      <div class="panel-top"><h3>Estado del colegio</h3><span class="note">Pantalla de ejemplo</span></div>
-      <div class="row ok"><span>Personal</span><span class="bar"><i style="--w:86%"></i></span><span class="num">86%</span></div>
-      <div class="row warn"><span>Recursos y subvenciones</span><span class="bar"><i style="--w:72%"></i></span><span class="num">72%</span></div>
-      <div class="row ok"><span>Reglamentos y protocolos</span><span class="bar"><i style="--w:95%"></i></span><span class="num">95%</span></div>
-      <div class="row bad"><span>Seguridad e infraestructura</span><span class="bar"><i style="--w:58%"></i></span><span class="num">58%</span></div>
-      <div class="row ok"><span>Estudiantes</span><span class="bar"><i style="--w:90%"></i></span><span class="num">90%</span></div>
-      <div class="chips"><span class="pill ok">Al día</span><span class="pill warn">Vence pronto</span><span class="pill bad">Falta o vencido</span></div>
+<nav class="top" aria-label="Secciones">
+  <div class="wrap">
+    <a class="brand" href="#inicio">Colegios al Día</a>
+    <div class="links">
+      <a class="c-app" href="#app"><i class="sq"></i>Aplicación</a>
+      <a class="c-ia" href="#ia"><i class="sq"></i>Talleres de IA</a>
+      <a class="c-team" href="#equipo"><i class="sq"></i>Jornadas de equipo</a>
+      <a href="#plan">Plan</a>
+      <a href="#preguntas">Preguntas</a>
     </div>
   </div>
-</section>
+</nav>
 
-<section class="lamina">
+<header class="hero" id="inicio">
+  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="lights" aria-hidden="true"><i></i><i></i><i></i></div>
+        <p class="eyebrow">Propuesta de negocio · Octubre 2026</p>
+        <h1>Colegios <em>al Día</em></h1>
+        <p class="lead">Tres servicios para colegios: una aplicación que muestra en un semáforo qué falta para una fiscalización, talleres de inteligencia artificial y jornadas de equipo.</p>
+        <p class="note">Nombre provisorio. Lo definimos juntos.</p>
+      </div>
+      <div class="panel" aria-label="Ejemplo de pantalla de la aplicación">
+        <div class="panel-top"><h3>Estado del colegio</h3><span class="note">Pantalla de ejemplo</span></div>
+        <div class="row l-ok"><span>Personal</span><span class="bar"><i style="--w:86%"></i></span><span class="num" data-n="86">86%</span></div>
+        <div class="row l-warn"><span>Recursos y subvenciones</span><span class="bar"><i style="--w:72%"></i></span><span class="num" data-n="72">72%</span></div>
+        <div class="row l-ok"><span>Reglamentos y protocolos</span><span class="bar"><i style="--w:95%"></i></span><span class="num" data-n="95">95%</span></div>
+        <div class="row l-bad"><span>Seguridad e infraestructura</span><span class="bar"><i style="--w:58%"></i></span><span class="num" data-n="58">58%</span></div>
+        <div class="row l-ok"><span>Estudiantes</span><span class="bar"><i style="--w:90%"></i></span><span class="num" data-n="90">90%</span></div>
+        <div class="legend"><span class="l-ok">Al día</span><span class="l-warn">Vence pronto</span><span class="l-bad">Falta o vencido</span></div>
+      </div>
+    </div>
+    <div class="strap">
+      <p class="eyebrow">El colegio contrata uno, dos o los tres</p>
+      <div class="strap-links">
+        <a class="c-app" href="#app">Aplicación de fiscalizaciones<span>↓</span></a>
+        <a class="c-ia" href="#ia">Talleres de IA<span>↓</span></a>
+        <a class="c-team" href="#equipo">Jornadas de equipo<span>↓</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true"><div>
+  <span>contratos</span><span>títulos profesionales</span><span>certificados de antecedentes</span><span>rendición de subvenciones</span><span>reglamento interno</span><span>protocolos</span><span>actas del consejo escolar</span><span>plan de seguridad</span><span>autorizaciones sanitarias</span><span>registro de matrícula</span><span>asistencia</span><span>programa de integración</span>
+  <span>contratos</span><span>títulos profesionales</span><span>certificados de antecedentes</span><span>rendición de subvenciones</span><span>reglamento interno</span><span>protocolos</span><span>actas del consejo escolar</span><span>plan de seguridad</span><span>autorizaciones sanitarias</span><span>registro de matrícula</span><span>asistencia</span><span>programa de integración</span>
+</div></div>
+
+<div class="wrap">
+
+<section class="sec rv">
   <div class="head">
     <p class="eyebrow">El problema</p>
     <h2>A un colegio lo fiscalizan por todos lados</h2>
-    <p class="lead">Cada organismo pide cosas distintas, los respaldos viven en carpetas y planillas, y lo que falta se descubre cuando ya llegó el fiscalizador.</p>
+    <p class="lead">Cada organismo pide cosas distintas, los respaldos viven en carpetas y planillas, y lo que falta se descubre cuando ya llegó el fiscalizador. Mientras tanto, los equipos directivos pierden horas en tareas administrativas y llegan desgastados a fin de año.</p>
   </div>
-  <div class="chips">
-    <div class="chip"><b>Personal</b>contratos, títulos, certificados</div>
-    <div class="chip"><b>Recursos</b>rendición de subvenciones</div>
-    <div class="chip"><b>Normativa interna</b>reglamento, protocolos, actas</div>
-    <div class="chip"><b>Seguridad</b>plan de seguridad, autorizaciones</div>
-    <div class="chip"><b>Estudiantes</b>matrícula, asistencia, integración</div>
-  </div>
-  <p class="note">Áreas de ejemplo. La lista real la armas tú, que las has vivido.</p>
 </section>
 
-<section class="lamina">
+<section class="sec rv" id="servicios" style="padding-top:0">
   <div class="head">
-    <p class="eyebrow">El negocio</p>
-    <h2>Dos líneas para un mismo cliente</h2>
-    <p class="lead">Fundaciones educacionales, colegios particulares subvencionados y privados. Quien decide la compra es el director o el sostenedor.</p>
+    <p class="eyebrow">Lo que ofrecemos</p>
+    <h2>Tres servicios distintos, un mismo cliente</h2>
+    <p class="lead">Fundaciones educacionales, colegios particulares subvencionados y privados. Cada servicio resuelve un problema diferente y se puede contratar por separado.</p>
   </div>
-  <div class="lines">
-    <div class="line-card">
-      <span class="tag">Línea 1 · Talleres</span>
-      <h3>Ingresos desde el primer mes</h3>
-      <ul>
-        <li><b>Inteligencia artificial</b> para equipos directivos, líderes y encargados de proyectos.</li>
-        <li><b>Jornadas de equipo</b> con encuesta de clima previa y herramientas de coaching.</li>
-      </ul>
-      <p class="muted small">Los colegios ya contratan este tipo de jornadas todos los años.</p>
-    </div>
-    <div class="line-card main">
-      <span class="tag">Línea 2 · Aplicación</span>
-      <h3>Ingreso mensual que crece</h3>
-      <ul>
-        <li>Control de todo lo que se fiscaliza, por área y con responsables.</li>
-        <li>Se instala una vez y se paga un plan mensual.</li>
-      </ul>
-      <p class="muted small">Es la apuesta grande. Hay que demostrarla en el piloto.</p>
-    </div>
+  <div class="menu">
+    <a class="svc-card c-app" href="#app">
+      <div class="topb">
+        <svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="11" y="3" width="22" height="38" rx="5" stroke="#fff" stroke-width="3"/><path d="M16 22l4.5 4.5L28 18" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="tag">Servicio 1 · Tecnología</span>
+        <h3>Aplicación de fiscalizaciones</h3>
+      </div>
+      <div class="bod">
+        <p>Un semáforo que muestra qué documento falta, cuál vence y quién es el responsable.</p>
+        <div class="kv"><span>Resuelve</span>Llegar a una fiscalización sin saber qué falta</div>
+        <div class="kv"><span>Se cobra</span>Instalación y plan mensual</div>
+        <span class="more">Ver el servicio ↓</span>
+      </div>
+    </a>
+    <a class="svc-card c-ia" href="#ia">
+      <div class="topb">
+        <svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M22 4l4.2 11.8L38 20l-11.8 4.2L22 36l-4.2-11.8L6 20l11.8-4.2L22 4z" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><circle cx="36" cy="36" r="3" fill="#fff"/></svg>
+        <span class="tag">Servicio 2 · Capacitación</span>
+        <h3>Talleres de IA</h3>
+      </div>
+      <div class="bod">
+        <p>Formación práctica para equipos directivos, líderes y encargados de proyectos.</p>
+        <div class="kv"><span>Resuelve</span>Horas perdidas en informes, actas y planillas</div>
+        <div class="kv"><span>Se cobra</span>Por taller</div>
+        <span class="more">Ver el servicio ↓</span>
+      </div>
+    </a>
+    <a class="svc-card c-team" href="#equipo">
+      <div class="topb">
+        <svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><circle cx="22" cy="12" r="6" stroke="#fff" stroke-width="3"/><circle cx="9" cy="30" r="5" stroke="#fff" stroke-width="3"/><circle cx="35" cy="30" r="5" stroke="#fff" stroke-width="3"/><path d="M14 30h16M19 17l-7 9M25 17l7 9" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+        <span class="tag">Servicio 3 · Personas</span>
+        <h3>Jornadas de equipo</h3>
+      </div>
+      <div class="bod">
+        <p>Team building para colegios, diseñado con una encuesta de clima y herramientas de coaching.</p>
+        <div class="kv"><span>Resuelve</span>Equipos desgastados o que no se coordinan</div>
+        <div class="kv"><span>Se cobra</span>Por jornada</div>
+        <span class="more">Ver el servicio ↓</span>
+      </div>
+    </a>
   </div>
-  <p class="bridge">Los talleres abren la puerta del colegio. La aplicación hace que se queden.</p>
+  <p class="indep">Se contratan por separado. Juntos se refuerzan.</p>
 </section>
 
-<section class="lamina">
-  <div class="head">
-    <p class="eyebrow">La aplicación</p>
-    <h2>Del papel al semáforo, desde el celular</h2>
-    <p class="lead">Así se vería cargar un documento. Los nombres y datos son inventados.</p>
+<!-- SERVICIO 1 -->
+<section class="sec c-app">
+  <div class="svc-head rv" id="app">
+    <span class="tag">Servicio 1 · Tecnología</span>
+    <h2>Aplicación de fiscalizaciones</h2>
+    <p class="lead">Todo lo que le pueden pedir al colegio, ordenado por área, con su respaldo, su fecha de vencimiento y su responsable.</p>
+    <div class="meta"><span>Para dirección, administración y RR.HH.</span><span>Instalación + plan mensual</span><span>Se prueba en el piloto</span></div>
   </div>
-  <div class="phones">
+
+  <div class="demo rv">
+    <div class="demo-top">
+      <div><span class="tag" style="color:var(--app)">Pruébala aquí</span><h3>Toca lo que falta para cargar el documento</h3></div>
+      <div class="score"><b id="pct">50%</b><span class="small muted">del colegio al día</span></div>
+    </div>
+    <div class="pbar"><i id="pbar"></i></div>
+    <div class="reqs" id="reqs">
+      <button type="button" class="req" data-s="ok"><span>Contratos del personal<small>Personal</small></span><span class="pill ok">Al día</span></button>
+      <button type="button" class="req" data-s="bad"><span>Certificados de antecedentes<small>Personal</small></span><span class="pill bad">Falta</span></button>
+      <button type="button" class="req" data-s="ok"><span>Reglamento interno<small>Normativa interna</small></span><span class="pill ok">Al día</span></button>
+      <button type="button" class="req" data-s="warn"><span>Acta del consejo escolar<small>Normativa interna</small></span><span class="pill warn">Vence pronto</span></button>
+      <button type="button" class="req" data-s="bad"><span>Revisión de extintores<small>Seguridad</small></span><span class="pill bad">Falta</span></button>
+      <button type="button" class="req" data-s="ok"><span>Registro de matrícula<small>Estudiantes</small></span><span class="pill ok">Al día</span></button>
+    </div>
+    <div class="demo-foot">
+      <p class="small" id="demomsg" aria-live="polite">Faltan 3 requisitos. Toca cada uno para dejarlo al día.</p>
+      <button type="button" class="btn" id="demoreset">Volver a empezar</button>
+    </div>
+  </div>
+
+  <div class="head rv"><h3>Cargar un documento desde el celular</h3><p class="note">Nombres y datos inventados</p></div>
+  <div class="phones rv">
     <div class="step">
       <div class="phone"><div class="view"><div class="sheet"><i></i><i></i><i></i><i></i></div></div><div class="shutter"></div></div>
       <h3>Tomas la foto</h3>
@@ -221,8 +419,8 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
     </div>
   </div>
 
-  <h3>Y arma el consolidado de lo que falta</h3>
-  <div class="scroll">
+  <div class="head rv"><h3>El consolidado de lo que falta</h3></div>
+  <div class="scroll rv">
     <table>
       <thead><tr><th>Requisito</th><th>Área</th><th>Responsable</th><th>Vence</th><th>Estado</th></tr></thead>
       <tbody>
@@ -234,9 +432,9 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
     </table>
   </div>
 
-  <div class="grid two">
+  <div class="grid two rv">
     <div class="plain">
-      <span class="tag">Primera versión · piloto</span>
+      <span class="tag muted">Primera versión · piloto</span>
       <ul>
         <li>Semáforo por área y por requisito</li>
         <li>Carga de documentos, también desde el celular</li>
@@ -245,7 +443,7 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
       </ul>
     </div>
     <div class="plain">
-      <span class="tag">Segunda versión · si el piloto funciona</span>
+      <span class="tag muted">Segunda versión · si el piloto funciona</span>
       <ul>
         <li>La app lee el documento, lo nombra y detecta si no sirve</li>
         <li>Consolidados automáticos para dirección y sostenedor</li>
@@ -253,30 +451,125 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
       </ul>
     </div>
   </div>
+
+  <div class="head rv"><h3>Cómo la puede contratar un colegio</h3></div>
+  <div class="grid rv">
+    <div class="card"><span class="tag muted">Pago único</span><h3>Radiografía inicial</h3><p class="small muted">Revisamos el colegio contra la lista de requisitos y entregamos qué falta.</p></div>
+    <div class="card"><span class="tag muted">Mensual</span><h3>Plan por áreas</h3><p class="small muted">Parte con Personal y suma áreas cuando quiera.</p></div>
+    <div class="card"><span class="tag muted">Anual</span><h3>Simulacro de fiscalización</h3><p class="small muted">Tú revisas el colegio como lo haría un fiscalizador, antes de que llegue uno.</p></div>
+    <div class="card"><span class="tag muted">Mensual</span><h3>Reporte para el sostenedor</h3><p class="small muted">Todos sus colegios en una sola pantalla.</p></div>
+  </div>
 </section>
 
-<section class="lamina">
+<!-- SERVICIO 2 -->
+<section class="sec c-ia">
+  <div class="svc-head rv" id="ia">
+    <span class="tag">Servicio 2 · Capacitación</span>
+    <h2>Talleres de inteligencia artificial</h2>
+    <p class="lead">El equipo sale usando IA en sus propias tareas: actas, informes, comunicados, planillas y seguimiento de proyectos.</p>
+    <div class="meta"><span>Para directivos, líderes y encargados de proyectos</span><span>Se cobra por taller</span><span>Los colegios ya pagan capacitación</span></div>
+  </div>
+  <div class="grid two rv">
+    <div class="chat" aria-label="Ejemplo de uso de IA en el taller">
+      <span class="who">Lo que escribe una directora · ejemplo</span>
+      <div class="bubble"><span id="typed">Resume el acta del consejo de profesores y arma la lista de tareas con responsables y fechas.</span><span class="caret"></span></div>
+      <span class="who">Lo que recibe en segundos</span>
+      <div class="answer" id="answer">
+        <div><b>30 oct</b><span>Actualizar protocolo de salidas pedagógicas · Inspectoría</span></div>
+        <div><b>05 nov</b><span>Enviar calendario de evaluaciones a apoderados · UTP</span></div>
+        <div><b>12 nov</b><span>Cotizar jornada de cierre de año · Dirección</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="plain">
+        <span class="tag muted">Qué se lleva el equipo</span>
+        <ul>
+          <li>Práctica con sus propios documentos, sin teoría de más</li>
+          <li>Plantillas listas para las tareas que más se repiten</li>
+          <li>Reglas claras de qué información no se sube a una IA</li>
+        </ul>
+      </div>
+      <div class="plain">
+        <span class="tag muted">Dos talleres para partir</span>
+        <ul>
+          <li><b>IA para equipos directivos:</b> decisiones, comunicación y seguimiento</li>
+          <li><b>Sácale partido a lo que ya pagas:</b> las herramientas de Microsoft 365 o Google que el colegio tiene y casi no usa</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIO 3 -->
+<section class="sec c-team">
+  <div class="svc-head rv" id="equipo">
+    <span class="tag">Servicio 3 · Personas</span>
+    <h2>Jornadas de equipo para colegios</h2>
+    <p class="lead">Team building con fundamento. Primero medimos cómo está el equipo, después diseñamos la jornada para lo que apareció.</p>
+    <div class="meta"><span>Para equipos docentes, directivos y asistentes</span><span>Se cobra por jornada</span><span>Los colegios ya contratan jornadas</span></div>
+  </div>
+  <div class="flow rv">
+    <div class="card"><span class="tag muted">Antes</span><h3>Encuesta de clima</h3><p class="small muted">Corta y anónima. Muestra dónde está el problema real.</p></div>
+    <div class="card"><span class="tag muted">Durante</span><h3>La jornada</h3><p class="small muted">Dinámicas y conversación guiada con herramientas de coaching, a la medida de ese equipo.</p></div>
+    <div class="card"><span class="tag muted">Después</span><h3>Segunda medición</h3><p class="small muted">A los tres meses, para ver si algo cambió.</p></div>
+  </div>
+  <div class="grid two rv">
+    <div class="card">
+      <div class="panel-top"><h3>Encuesta de clima</h3><span class="note">Resultados de ejemplo · escala 1 a 5</span></div>
+      <div class="clima">
+        <div class="crow"><span>Trabajo en equipo</span><span class="cbar"><i style="--w:84%"></i></span><span class="num">4,2</span></div>
+        <div class="crow"><span>Comunicación</span><span class="cbar"><i style="--w:78%"></i></span><span class="num">3,9</span></div>
+        <div class="crow"><span>Reconocimiento</span><span class="cbar"><i style="--w:62%"></i></span><span class="num">3,1</span></div>
+        <div class="crow low"><span>Carga de trabajo</span><span class="cbar"><i style="--w:52%"></i></span><span class="num">2,6</span></div>
+      </div>
+      <p class="small muted">En este ejemplo, la jornada se diseña en torno a la carga de trabajo.</p>
+    </div>
+    <div class="plain">
+      <span class="tag muted">Por qué no es una jornada más</span>
+      <ul>
+        <li>Parte de datos del propio equipo, sin dinámicas genéricas</li>
+        <li>La diseñan dos personas que conocen los colegios por dentro</li>
+        <li>Deja un informe para dirección con acuerdos y próximos pasos</li>
+        <li>Trabaja prevención y buen trato; no investiga denuncias ni reemplaza asesoría legal</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec rv">
   <div class="head">
-    <p class="eyebrow">Lo que se puede vender</p>
-    <h2>Cinco productos que salen de la aplicación</h2>
+    <p class="eyebrow">Cómo nos contrata un colegio</p>
+    <h2>Por separado o en conjunto</h2>
+    <p class="lead">Activa o desactiva cada servicio para ver qué recibe el colegio.</p>
   </div>
-  <div class="grid">
-    <div class="card"><span class="tag">Pago único</span><h3>Radiografía inicial</h3><p class="small muted">Revisamos el colegio contra la lista de requisitos y entregamos qué falta.</p></div>
-    <div class="card"><span class="tag">Mensual</span><h3>Plan por áreas</h3><p class="small muted">El colegio parte con Personal y suma áreas cuando quiera.</p></div>
-    <div class="card"><span class="tag">Anual</span><h3>Simulacro de fiscalización</h3><p class="small muted">Tú revisas el colegio como lo haría un fiscalizador, antes de que llegue uno.</p></div>
-    <div class="card"><span class="tag">Mensual</span><h3>Reporte para el sostenedor</h3><p class="small muted">Una vista de todos sus colegios en una sola pantalla.</p></div>
-    <div class="card"><span class="tag">Por taller</span><h3>Capacitación del equipo</h3><p class="small muted">Para que cada responsable mantenga su área al día.</p></div>
+  <div class="pick" id="pick">
+    <button type="button" class="tog c-app" aria-pressed="true" data-k="app"><i class="sq"></i>Aplicación</button>
+    <button type="button" class="tog c-ia" aria-pressed="true" data-k="ia"><i class="sq"></i>Talleres de IA</button>
+    <button type="button" class="tog c-team" aria-pressed="true" data-k="team"><i class="sq"></i>Jornadas de equipo</button>
   </div>
+  <div class="combo full" aria-live="polite">
+    <h3 id="pickt">Colegio al Día completo</h3>
+    <ul class="picklist" id="pickl">
+      <li class="c-app"><i class="sq"></i>Radiografía inicial y aplicación instalada, con el semáforo por área</li>
+      <li class="c-app"><i class="sq"></i>Plan mensual con avisos de vencimiento y reportes</li>
+      <li class="c-ia"><i class="sq"></i>Taller práctico de IA para el equipo directivo</li>
+      <li class="c-ia"><i class="sq"></i>Plantillas para las tareas que más se repiten</li>
+      <li class="c-team"><i class="sq"></i>Encuesta de clima antes y después</li>
+      <li class="c-team"><i class="sq"></i>Jornada de equipo diseñada a la medida, con informe para dirección</li>
+    </ul>
+    <p class="small muted" id="pickp">Se cobra: instalación y plan mensual · por taller · por jornada</p>
+  </div>
+  <p class="small muted">Los talleres y jornadas traen ingresos desde el primer mes y abren la puerta. La aplicación es el ingreso mensual que crece.</p>
 </section>
 
-<section class="lamina">
+<section class="sec rv">
   <div class="head">
     <p class="eyebrow">El equipo</p>
     <h2>Lo que sabe cada uno es lo que le falta al otro</h2>
   </div>
   <div class="grid two">
     <div class="card">
-      <span class="tag">Tú</span>
+      <span class="tag muted">Tú</span>
       <h3>Sabes qué piden y dónde duele</h3>
       <ul class="small">
         <li>15 años como jefa de Recursos Humanos en un colegio</li>
@@ -286,7 +579,7 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
       </ul>
     </div>
     <div class="card">
-      <span class="tag">Yo</span>
+      <span class="tag muted">Yo</span>
       <h3>Lo convierto en herramienta y en taller</h3>
       <ul class="small">
         <li>Ingeniero Comercial, analista de desarrollo de personas en Fundación Integra</li>
@@ -294,27 +587,27 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
         <li>Diseño y gestión de programas de capacitación</li>
         <li>Diplomado en coaching para el liderazgo</li>
       </ul>
-      <p class="small muted">No soy programador. Construyo con IA, mantengo la aplicación acotada y, si crece, se contrata uno.</p>
+      <p class="small muted">No soy programador. Construyo con Claude, una inteligencia artificial: esta presentación y sus demostraciones están hechas así. Si la aplicación crece, se contrata un programador.</p>
     </div>
   </div>
 </section>
 
-<section class="lamina">
+<section class="sec rv" id="plan" style="scroll-margin-top:60px">
   <div class="head">
     <p class="eyebrow">El plan</p>
     <h2>Partimos en tu colegio, que ya aceptó</h2>
   </div>
   <div class="timeline">
-    <div class="hito"><span class="when">Octubre 2026</span><div class="what"><h3>Acuerdo y lista de requisitos</h3><p class="small muted">Tú defines qué se fiscaliza en el área de Personal. Dejamos el piloto por escrito con el colegio.</p></div></div>
-    <div class="hito"><span class="when">Noviembre 2026</span><div class="what"><h3>Demostración y primer taller</h3><p class="small muted">Aplicación con datos ficticios para mostrar. Taller de IA al equipo directivo.</p></div></div>
-    <div class="hito"><span class="when">Diciembre 2026</span><div class="what"><h3>Datos reales y jornada de equipo</h3><p class="small muted">El colegio carga sus carpetas. Jornada de cierre de año diseñada con la encuesta de clima.</p></div></div>
-    <div class="hito"><span class="when">Enero y febrero 2027</span><div class="what"><h3>Ordenar y formalizar</h3><p class="small muted">Medimos resultados del piloto, constituimos la sociedad y preparamos el material de venta.</p></div></div>
-    <div class="hito"><span class="when">Marzo 2027</span><div class="what"><h3>Salir a vender</h3><p class="small muted">Con un caso real en la mano, a colegios de tu red.</p></div></div>
-    <div class="hito"><span class="when">Junio 2027</span><div class="what"><h3>Primera meta: 5 colegios pagando</h3><p class="small muted">Si no se cumple, revisamos qué producto sí se vendió y ajustamos.</p></div></div>
+    <div class="hito"><span class="when">Octubre 2026</span><h3>Acuerdo y lista de requisitos</h3><p class="small muted">Tú defines qué se fiscaliza en el área de Personal. Dejamos el piloto por escrito con el colegio.</p></div>
+    <div class="hito"><span class="when">Noviembre 2026</span><h3>Demostración de la aplicación y primer taller de IA</h3><p class="small muted">Aplicación con datos ficticios para mostrar. Taller al equipo directivo.</p></div>
+    <div class="hito"><span class="when">Diciembre 2026</span><h3>Datos reales y jornada de equipo</h3><p class="small muted">El colegio carga sus carpetas. Jornada de cierre de año diseñada con la encuesta de clima.</p></div>
+    <div class="hito"><span class="when">Enero y febrero 2027</span><h3>Ordenar y formalizar</h3><p class="small muted">Medimos resultados del piloto, constituimos la sociedad y preparamos el material de venta.</p></div>
+    <div class="hito"><span class="when">Marzo 2027</span><h3>Salir a vender</h3><p class="small muted">Con un caso real de los tres servicios, a colegios de tu red.</p></div>
+    <div class="hito goal"><span class="when">Junio 2027</span><h3>Primera meta: 5 colegios pagando</h3><p class="small muted">Si no se cumple, revisamos qué servicio sí se vendió y ajustamos.</p></div>
   </div>
 </section>
 
-<section class="lamina">
+<section class="sec rv">
   <div class="head">
     <p class="eyebrow">Los números</p>
     <h2>Qué se cobra y qué falta demostrar</h2>
@@ -322,19 +615,19 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
   </div>
   <div class="scroll">
     <table>
-      <thead><tr><th>Producto</th><th>Cómo se cobra</th><th>Rango estimado</th><th>Qué tan seguro es</th></tr></thead>
+      <thead><tr><th>Servicio</th><th>Cómo se cobra</th><th>Rango estimado</th><th>Qué tan seguro es</th></tr></thead>
       <tbody>
-        <tr><td>Taller de IA</td><td>Por taller</td><td class="m">$350.000 – $600.000</td><td>Los colegios ya pagan capacitaciones</td></tr>
-        <tr><td>Jornada de equipo</td><td>Por jornada</td><td class="m">$400.000 – $800.000</td><td>Los colegios ya pagan jornadas</td></tr>
-        <tr><td>Aplicación · instalación</td><td>Pago único</td><td class="m">$400.000 – $900.000</td><td>Por demostrar en el piloto</td></tr>
-        <tr><td>Aplicación · plan mensual</td><td>Mensual por colegio</td><td class="m">$80.000 – $150.000</td><td>Por demostrar en el piloto</td></tr>
+        <tr><td><i class="sq c-app"></i>Aplicación · instalación</td><td>Pago único</td><td class="m">$400.000 – $900.000</td><td>Por demostrar en el piloto</td></tr>
+        <tr><td><i class="sq c-app"></i>Aplicación · plan mensual</td><td>Mensual por colegio</td><td class="m">$80.000 – $150.000</td><td>Por demostrar en el piloto</td></tr>
+        <tr><td><i class="sq c-ia"></i>Taller de IA</td><td>Por taller</td><td class="m">$350.000 – $600.000</td><td>Los colegios ya pagan capacitaciones</td></tr>
+        <tr><td><i class="sq c-team"></i>Jornada de equipo</td><td>Por jornada</td><td class="m">$400.000 – $800.000</td><td>Los colegios ya pagan jornadas</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="small muted">Cuenta de referencia: 10 colegios en un plan de $100.000 son $1.000.000 al mes, antes de talleres. Los talleres se pueden financiar con franquicia SENCE a través de una OTEC aliada.</p>
+  <p class="small muted">Cuenta de referencia: 10 colegios en un plan de $100.000 son $1.000.000 al mes, antes de talleres y jornadas. Estos últimos se pueden financiar con franquicia SENCE a través de una OTEC aliada.</p>
 </section>
 
-<section class="lamina">
+<section class="sec rv">
   <div class="head">
     <p class="eyebrow">Los riesgos</p>
     <h2>Lo que puede salir mal y cómo lo cuidamos</h2>
@@ -353,23 +646,24 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<section class="lamina">
+<section class="sec rv">
   <div class="head">
     <p class="eyebrow">Tu parte</p>
     <h2>Qué te pido y qué no</h2>
   </div>
   <div class="grid two">
     <div class="plain">
-      <span class="tag">Te pido</span>
+      <span class="tag muted">Te pido</span>
       <ul>
         <li>Tu conocimiento: la lista de lo que se fiscaliza</li>
         <li>Unas horas a la semana, que definimos juntos</li>
         <li>Probar la aplicación en tu trabajo y decirme qué no sirve</li>
+        <li>Diseñar conmigo las jornadas de equipo</li>
         <li>Presentarme a colegas de otros colegios</li>
       </ul>
     </div>
     <div class="plain">
-      <span class="tag">No te pido</span>
+      <span class="tag muted">No te pido</span>
       <ul>
         <li>Poner plata</li>
         <li>Programar ni aprender tecnología nueva</li>
@@ -379,26 +673,111 @@ footer{padding-top:28px;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<section class="lamina">
-  <div class="head">
-    <p class="eyebrow">Para conversar</p>
-    <h2>Preguntas que solo tú puedes responder</h2>
+</div>
+
+<section class="dark" id="preguntas" style="scroll-margin-top:50px">
+  <div class="wrap sec rv">
+    <div class="head">
+      <p class="eyebrow">Para conversar</p>
+      <h2>Preguntas que solo tú puedes responder</h2>
+    </div>
+    <ol class="qs">
+      <li>¿Qué fiscalizaciones recibió el colegio en los últimos tres años, y de qué organismos?</li>
+      <li>¿Qué documento o requisito es el que más cuesta tener al día?</li>
+      <li>¿Hubo observaciones o multas? ¿Por qué motivo?</li>
+      <li>¿Qué haces hoy en Excel o en papel que te quita más tiempo?</li>
+      <li>¿El colegio trabaja con Microsoft 365 o con Google?</li>
+      <li>¿Usan algún sistema de remuneraciones o de gestión de personas?</li>
+      <li>¿Cuánto paga hoy el colegio por una capacitación o una jornada de equipo?</li>
+      <li>¿Con quién dejamos el piloto por escrito?</li>
+      <li>¿Cuántas horas a la semana podrías dedicarle?</li>
+      <li>¿Cómo te gustaría participar: como socia, y en qué proporción?</li>
+      <li>¿A qué cinco colegas de otros colegios les haríamos estas mismas preguntas?</li>
+    </ol>
+    <p class="note">Documento de trabajo · Octubre 2026 · Las pantallas, nombres y cifras son ejemplos.</p>
   </div>
-  <ol class="qs">
-    <li>¿Qué fiscalizaciones recibió el colegio en los últimos tres años, y de qué organismos?</li>
-    <li>¿Qué documento o requisito es el que más cuesta tener al día?</li>
-    <li>¿Hubo observaciones o multas? ¿Por qué motivo?</li>
-    <li>¿Qué haces hoy en Excel o en papel que te quita más tiempo?</li>
-    <li>¿El colegio trabaja con Microsoft 365 o con Google?</li>
-    <li>¿Usan algún sistema de remuneraciones o de gestión de personas?</li>
-    <li>¿Con quién dejamos el piloto por escrito?</li>
-    <li>¿Cuántas horas a la semana podrías dedicarle?</li>
-    <li>¿Cómo te gustaría participar: como socia, y en qué proporción?</li>
-    <li>¿A qué cinco colegas de otros colegios les haríamos estas mismas preguntas?</li>
-  </ol>
-  <footer><p class="note">Documento de trabajo · Octubre 2026 · Las pantallas, nombres y cifras son ejemplos.</p></footer>
 </section>
 
-</div>
+<script>
+// Demostración del semáforo y selector de servicios: funcionan aunque las animaciones estén desactivadas.
+(function(){
+  var reqs = [].slice.call(document.querySelectorAll('#reqs .req')), pct = document.getElementById('pct'),
+      pbar = document.getElementById('pbar'), msg = document.getElementById('demomsg'), reset = document.getElementById('demoreset');
+  if (reqs.length && pct && pbar && msg && reset){
+    var start = reqs.map(function(r){ return r.getAttribute('data-s'); });
+    var label = {ok:'Al día', warn:'Vence pronto', bad:'Falta'};
+    function setState(r, s, text){ r.setAttribute('data-s', s); var p = r.querySelector('.pill'); p.className = 'pill ' + (s === 'load' ? 'warn' : s); p.textContent = text || label[s]; }
+    function refresh(){
+      var ok = reqs.filter(function(r){ return r.getAttribute('data-s') === 'ok'; }).length, left = reqs.length - ok, v = Math.round(ok / reqs.length * 100);
+      pct.textContent = v + '%'; pbar.style.width = v + '%';
+      pbar.style.background = v === 100 ? 'var(--ok)' : v >= 65 ? 'var(--warn)' : 'var(--bad)';
+      msg.textContent = left === 0 ? 'Colegio al día. Así se quiere llegar a una fiscalización.' : left === 1 ? 'Falta 1 requisito.' : 'Faltan ' + left + ' requisitos. Toca cada uno para dejarlo al día.';
+    }
+    reqs.forEach(function(r){ r.addEventListener('click', function(){
+      var s = r.getAttribute('data-s'); if (s === 'ok' || s === 'load') return;
+      setState(r, 'load', 'Cargando…'); setTimeout(function(){ setState(r, 'ok'); refresh(); }, 800);
+    }); });
+    reset.addEventListener('click', function(){ reqs.forEach(function(r, i){ setState(r, start[i]); }); refresh(); });
+  }
+
+  var togs = [].slice.call(document.querySelectorAll('#pick .tog')), pt = document.getElementById('pickt'), pl = document.getElementById('pickl'), pp = document.getElementById('pickp');
+  if (togs.length && pt && pl && pp){
+    var svc = {
+      app:{n:'la aplicación', c:'instalación y plan mensual', i:['Radiografía inicial y aplicación instalada, con el semáforo por área','Plan mensual con avisos de vencimiento y reportes']},
+      ia:{n:'los talleres de IA', c:'por taller', i:['Taller práctico de IA para el equipo directivo','Plantillas para las tareas que más se repiten']},
+      team:{n:'las jornadas de equipo', c:'por jornada', i:['Encuesta de clima antes y después','Jornada de equipo diseñada a la medida, con informe para dirección']}
+    };
+    function draw(){
+      var on = togs.filter(function(t){ return t.getAttribute('aria-pressed') === 'true'; }).map(function(t){ return t.getAttribute('data-k'); });
+      pl.textContent = '';
+      on.forEach(function(k){ svc[k].i.forEach(function(txt){
+        var li = document.createElement('li'), sq = document.createElement('i'); li.className = 'c-' + k; sq.className = 'sq';
+        li.appendChild(sq); li.appendChild(document.createTextNode(txt)); pl.appendChild(li); }); });
+      pt.textContent = on.length === 3 ? 'Colegio al Día completo' : on.length === 2 ? 'Dos servicios que se refuerzan' : on.length === 1 ? 'Solo ' + svc[on[0]].n : 'Elige al menos un servicio';
+      pp.textContent = on.length ? 'Se cobra: ' + on.map(function(k){ return svc[k].c; }).join(' · ') : 'Cada servicio se puede contratar por separado.';
+    }
+    togs.forEach(function(t){ t.addEventListener('click', function(){ t.setAttribute('aria-pressed', t.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); draw(); }); });
+  }
+})();
+</script>
+
+<script>
+(function(){
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var root = document.documentElement; root.classList.add('anim');
+
+  // porcentajes de la portada
+  document.querySelectorAll('[data-n]').forEach(function(el){
+    var n = +el.getAttribute('data-n'), t0 = null; el.textContent = '0%';
+    function f(t){ if(!t0) t0 = t; var p = Math.max(0, Math.min((t - t0 - 800) / 1200, 1));
+      el.textContent = Math.round(n * p) + '%'; if (p < 1) requestAnimationFrame(f); }
+    requestAnimationFrame(f);
+  });
+
+  // aparición al hacer scroll: solo se oculta lo que está bajo la pantalla
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold: .08});
+    document.querySelectorAll('.rv').forEach(function(el){
+      if (el.getBoundingClientRect().top > window.innerHeight * .92){ el.classList.add('pre'); io.observe(el); } });
+  }
+
+  // demostración de escritura en el taller de IA
+  var typed = document.getElementById('typed'), ans = document.getElementById('answer');
+  if (!typed || !ans) return;
+  var text = typed.textContent, rows = [].slice.call(ans.children);
+  function hide(){ rows.forEach(function(r){ r.style.opacity = 0; r.style.transform = 'translateY(8px)'; }); }
+  function run(){
+    hide(); typed.textContent = ''; var i = 0;
+    (function type(){
+      typed.textContent = text.slice(0, ++i);
+      if (i < text.length) return setTimeout(type, 28);
+      rows.forEach(function(r, k){ setTimeout(function(){ r.style.opacity = 1; r.style.transform = 'none'; }, 500 + k * 450); });
+      setTimeout(run, 7500);
+    })();
+  }
+  run();
+})();
+</script>
 </body>
 </html>
